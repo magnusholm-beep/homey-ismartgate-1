@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- House/Garage outline -->
+  <path d="M250 50 L450 180 L450 450 L50 450 L50 180 Z" fill="#4A4A4A" stroke="#333" stroke-width="8"/>
+
+  <!-- Roof -->
+  <path d="M250 30 L470 170 L450 180 L250 50 L50 180 L30 170 Z" fill="#5A5A5A" stroke="#333" stroke-width="6"/>
+
+  <!-- Garage door frame -->
+  <rect x="100" y="200" width="300" height="230" rx="5" fill="#E8E8E8" stroke="#333" stroke-width="4"/>
+
+  <!-- Garage door panels -->
+  <rect x="115" y="215" width="270" height="45" rx="3" fill="#D0D0D0" stroke="#999" stroke-width="2"/>
+  <rect x="115" y="270" width="270" height="45" rx="3" fill="#D0D0D0" stroke="#999" stroke-width="2"/>
+  <rect x="115" y="325" width="270" height="45" rx="3" fill="#D0D0D0" stroke="#999" stroke-width="2"/>
+  <rect x="115" y="380" width="270" height="45" rx="3" fill="#D0D0D0" stroke="#999" stroke-width="2"/>
+
+  <!-- Door handle -->
+  <rect x="340" y="310" width="30" height="12" rx="3" fill="#666"/>
+</svg>

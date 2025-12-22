@@ -2,5 +2,21 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Please log in to connect your ismartgate device. Note that it needs to have remote access enabled for this to work."
+  },
+  "drivers": {
+    "garagedoor": {
+      "name": "Garage Door",
+      "pair": {
+        "list_devices": {
+          "title": "Select doors",
+          "subtitle": "Select the garage doors you want to add"
+        }
+      },
+      "settings": {
+        "poll_interval": {
+          "title": "Poll Interval"
+        }
+      }
+    }
   }
 }

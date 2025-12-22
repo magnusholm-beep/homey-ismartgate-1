@@ -1,0 +1,16 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Open/Close",
+    "no": "Åpne/Lukk"
+  },
+  "desc": {
+    "en": "Toggle garage door",
+    "no": "Åpne eller lukk garasjeporten"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "toggle",
+  "uiQuickAction": true,
+  "icon": "/drivers/garagedoor/assets/garage_icon.svg"
+}

@@ -1,0 +1,32 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Garage door open",
+    "no": "Garasjeport åpen"
+  },
+  "desc": {
+    "en": "Garage door is open",
+    "no": "Garasjeporten er åpen"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/drivers/garagedoor/assets/garage_icon.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Opened",
+    "no": "Åpnet"
+  },
+  "insightsTitleFalse": {
+    "en": "Closed",
+    "no": "Lukket"
+  },
+  "titleTrue": {
+    "en": "Open",
+    "no": "Åpen"
+  },
+  "titleFalse": {
+    "en": "Closed",
+    "no": "Lukket"
+  }
+}

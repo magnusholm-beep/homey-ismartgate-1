@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.gogogate.ismartgate",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#18181B",
@@ -36,6 +36,44 @@
     }
   },
   "flow": {
+    "triggers": [
+      {
+        "id": "door-closed",
+        "title": {
+          "en": "Garage door closed",
+          "no": "Garasjeport lukket"
+        },
+        "hint": {
+          "en": "When the garage door is closed",
+          "no": "Når garasjeporten lukkes"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=garagedoor"
+          }
+        ]
+      },
+      {
+        "id": "door-opened",
+        "title": {
+          "en": "Garage door opened",
+          "no": "Garasjeport åpnet"
+        },
+        "hint": {
+          "en": "When the garage door is opened",
+          "no": "Når garasjeporten åpnes"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=garagedoor"
+          }
+        ]
+      }
+    ],
     "conditions": [
       {
         "title": {
@@ -195,5 +233,124 @@
         "id": "toggle-door-state"
       }
     ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Garage Door",
+        "no": "Garasjeport"
+      },
+      "class": "garagedoor",
+      "capabilities": [
+        "garagedoor_toggle",
+        "alarm_garagedoor_open",
+        "measure_temperature",
+        "measure_battery"
+      ],
+      "capabilitiesOptions": {
+        "measure_temperature": {
+          "title": {
+            "en": "Sensor Temperature",
+            "no": "Sensortemperatur"
+          }
+        },
+        "measure_battery": {
+          "title": {
+            "en": "Sensor Battery",
+            "no": "Sensorbatteri"
+          }
+        }
+      },
+      "energy": {
+        "batteries": [
+          "OTHER"
+        ]
+      },
+      "images": {
+        "small": "/drivers/garagedoor/assets/small.png",
+        "large": "/drivers/garagedoor/assets/large.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Poll Interval (seconds)",
+            "no": "Oppdateringsintervall (sekunder)"
+          },
+          "hint": {
+            "en": "How often to check the door status",
+            "no": "Hvor ofte dørstatus skal sjekkes"
+          },
+          "value": 30,
+          "min": 10,
+          "max": 300
+        }
+      ],
+      "id": "garagedoor"
+    }
+  ],
+  "capabilities": {
+    "alarm_garagedoor_open": {
+      "type": "boolean",
+      "title": {
+        "en": "Garage door open",
+        "no": "Garasjeport åpen"
+      },
+      "desc": {
+        "en": "Garage door is open",
+        "no": "Garasjeporten er åpen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/drivers/garagedoor/assets/garage_icon.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Opened",
+        "no": "Åpnet"
+      },
+      "insightsTitleFalse": {
+        "en": "Closed",
+        "no": "Lukket"
+      },
+      "titleTrue": {
+        "en": "Open",
+        "no": "Åpen"
+      },
+      "titleFalse": {
+        "en": "Closed",
+        "no": "Lukket"
+      }
+    },
+    "garagedoor_toggle": {
+      "type": "boolean",
+      "title": {
+        "en": "Open/Close",
+        "no": "Åpne/Lukk"
+      },
+      "desc": {
+        "en": "Toggle garage door",
+        "no": "Åpne eller lukk garasjeporten"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "toggle",
+      "uiQuickAction": true,
+      "icon": "/drivers/garagedoor/assets/garage_icon.svg"
+    }
   }
 }

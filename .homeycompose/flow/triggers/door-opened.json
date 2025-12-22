@@ -1,0 +1,18 @@
+{
+  "id": "door-opened",
+  "title": {
+    "en": "Garage door opened",
+    "no": "Garasjeport åpnet"
+  },
+  "hint": {
+    "en": "When the garage door is opened",
+    "no": "Når garasjeporten åpnes"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=garagedoor"
+    }
+  ]
+}

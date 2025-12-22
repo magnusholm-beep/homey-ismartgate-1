@@ -22,5 +22,8 @@
   },
   "1.4.0": {
     "en": "Add battery level flow. Add donation button. Add setup instructions."
+  },
+  "1.5.0": {
+    "en": "Add garage door device with open/close toggle, temperature and battery sensors. Doors now appear as devices in Homey. Add flow triggers for when door opens or closes."
   }
 }

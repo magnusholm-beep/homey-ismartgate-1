@@ -1,0 +1,64 @@
+{
+  "name": {
+    "en": "Garage Door",
+    "no": "Garasjeport"
+  },
+  "class": "garagedoor",
+  "capabilities": [
+    "garagedoor_toggle",
+    "alarm_garagedoor_open",
+    "measure_temperature",
+    "measure_battery"
+  ],
+  "capabilitiesOptions": {
+    "measure_temperature": {
+      "title": {
+        "en": "Sensor Temperature",
+        "no": "Sensortemperatur"
+      }
+    },
+    "measure_battery": {
+      "title": {
+        "en": "Sensor Battery",
+        "no": "Sensorbatteri"
+      }
+    }
+  },
+  "energy": {
+    "batteries": ["OTHER"]
+  },
+  "images": {
+    "small": "/drivers/garagedoor/assets/small.png",
+    "large": "/drivers/garagedoor/assets/large.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "poll_interval",
+      "type": "number",
+      "label": {
+        "en": "Poll Interval (seconds)",
+        "no": "Oppdateringsintervall (sekunder)"
+      },
+      "hint": {
+        "en": "How often to check the door status",
+        "no": "Hvor ofte dørstatus skal sjekkes"
+      },
+      "value": 30,
+      "min": 10,
+      "max": 300
+    }
+  ]
+}
