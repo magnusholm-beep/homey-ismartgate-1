@@ -9,81 +9,98 @@ const nodeFetch = require('node-fetch');
 
 class ISmartGateApp extends Homey.App {
   async onInit() {
-    this.cachedInfoResponseObj = null;
-    this.cachedInfoResponseTime = null;
+    this.cachedInfoResponse = {
+      1: { obj: null, time: null },
+      2: { obj: null, time: null },
+    };
 
     // Register flow cards
     const toggleDoorState = this.homey.flow.getActionCard('toggle-door-state');
     toggleDoorState.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
-      await this.activateDoor(doorNumber, 'toggle');
+      await this.activateDoor(hubNumber, doorNumber, 'toggle');
     });
 
     const openDoor = this.homey.flow.getActionCard('open-door');
     openDoor.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
-      await this.activateDoor(doorNumber, 'open');
+      await this.activateDoor(hubNumber, doorNumber, 'open');
     });
 
     const closeDoor = this.homey.flow.getActionCard('close-door');
     closeDoor.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
-      await this.activateDoor(doorNumber, 'close');
+      await this.activateDoor(hubNumber, doorNumber, 'close');
     });
 
     const doorIsOpen = this.homey.flow.getConditionCard('door-is-open');
     doorIsOpen.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
-      let infoResponseObj = await this.getInfo(1);
+      let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isDoorOpen(infoResponseObj, doorNumber);
     });
 
     const temperatureIsLessThan = this.homey.flow.getConditionCard('temperature-is-less-than');
     temperatureIsLessThan.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber, temperature} = args;
-      let infoResponseObj = await this.getInfo(1);
+      let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isTemperatureLessThan(infoResponseObj, doorNumber, temperature);
     });
 
     const batteryLevelIsLessThan = this.homey.flow.getConditionCard('battery-level-is-less-than');
     batteryLevelIsLessThan.registerRunListener(async (args) => {
+      const hubNumber = args.hubNumber || 1;
       const {doorNumber, batteryLevel} = args;
-      let infoResponseObj = await this.getInfo(1);
+      let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isBatteryLevelLessThan(infoResponseObj, doorNumber, batteryLevel);
     });
 
     this.log('ismartgate app initialized');
   }
 
-  getSettings() {
-    const udi = this.homey.settings.get('udi');
+  getSettings(hubNumber = 1) {
+    const suffix = hubNumber === 2 ? '2' : '';
+    const hubLabel = hubNumber === 2 ? 'hub 2' : 'your ismartgate device';
+
+    const udi = this.homey.settings.get(`udi${suffix}`);
     if (!udi) {
-      throw new Error("You are not logged in to your ismartgate device. Go to settings and fill in UDI and other fields.");
+      throw new Error(`You are not logged in to ${hubLabel}. Go to settings and fill in UDI and other fields.`);
     }
-    const username = this.homey.settings.get('username');
+    const username = this.homey.settings.get(`username${suffix}`);
     if (!username) {
-      throw new Error("You are not logged in to your ismartgate device. Go to settings and fill in username and other fields.");
+      throw new Error(`You are not logged in to ${hubLabel}. Go to settings and fill in username and other fields.`);
     }
-    const password = this.homey.settings.get('password');
+    const password = this.homey.settings.get(`password${suffix}`);
     if (!password) {
-      throw new Error("You are not logged in to your ismartgate device. Go to settings and fill in password and other fields.");
+      throw new Error(`You are not logged in to ${hubLabel}. Go to settings and fill in password and other fields.`);
     }
     return { udi, username, password };
   }
 
-  async getInfo(maxCacheAgeInSeconds) {
+  isHubConfigured(hubNumber) {
+    const suffix = hubNumber === 2 ? '2' : '';
+    return !!this.homey.settings.get(`udi${suffix}`);
+  }
+
+  async getInfo(hubNumber, maxCacheAgeInSeconds) {
+    const cache = this.cachedInfoResponse[hubNumber];
     let cacheAgeInSeconds = Infinity;
-    if (null !== this.cachedInfoResponseTime) {
-      cacheAgeInSeconds = ((new Date()) - this.cachedInfoResponseTime) / 1000;
+    if (cache.time !== null) {
+      cacheAgeInSeconds = ((new Date()) - cache.time) / 1000;
     }
     if (cacheAgeInSeconds < maxCacheAgeInSeconds) {
-      return this.cachedInfoResponseObj;
+      return cache.obj;
     }
-    const { username, password } = this.getSettings();
+    const { username, password } = this.getSettings(hubNumber);
     const infoCommandStr = `["${username}", "${password}", "info", "", ""]`;
-    this.cachedInfoResponseObj = await this.executeRequest(infoCommandStr);
-    this.cachedInfoResponseTime = new Date();
-    return this.cachedInfoResponseObj;
+    cache.obj = await this.executeRequest(infoCommandStr, hubNumber);
+    cache.time = new Date();
+    return cache.obj;
   }
 
   parseResponse(xmlStr) {
@@ -137,8 +154,8 @@ class ISmartGateApp extends Homey.App {
     return door.voltage < batteryLevel;
   }
 
-  async executeRequest(commandStr) {
-    const { udi, username, password } = this.getSettings();
+  async executeRequest(commandStr, hubNumber = 1) {
+    const { udi, username, password } = this.getSettings(hubNumber);
     const aesBlockSize = 16;
 
     const rawToken = `${username.toLowerCase()}@ismartgate`
@@ -200,14 +217,14 @@ class ISmartGateApp extends Homey.App {
       });
   }
 
-  async activateDoor(doorNumber, direction, maxCacheAgeInSeconds = null, allowRetry = true) {
+  async activateDoor(hubNumber, doorNumber, direction, maxCacheAgeInSeconds = null, allowRetry = true) {
     if (maxCacheAgeInSeconds === null) {
       maxCacheAgeInSeconds = 200;
       if (direction === 'open' || direction === 'close') {
         maxCacheAgeInSeconds = 2.5;
       }
     }
-    let infoResponseObj = await this.getInfo(maxCacheAgeInSeconds);
+    let infoResponseObj = await this.getInfo(hubNumber, maxCacheAgeInSeconds);
     if (this.isDoorOpen(infoResponseObj, doorNumber)) {
       if (direction === 'open') {
         // Door is already open. Do nothing.
@@ -219,13 +236,13 @@ class ISmartGateApp extends Homey.App {
         return;
       }
     }
-    const { username, password } = this.getSettings();
+    const { username, password } = this.getSettings(hubNumber);
     let apiCode = infoResponseObj.response[`door${doorNumber}`].apicode;
     const activateCommandStr = `["${username}", "${password}", "activate", "${doorNumber}", "${apiCode}"]`;
-    let activateResponseObj = await this.executeRequest(activateCommandStr);
+    let activateResponseObj = await this.executeRequest(activateCommandStr, hubNumber);
     if (allowRetry && activateResponseObj.response.error && activateResponseObj.response.error.errormsg === 'Error: invalid API code') {
       // API code expired. Fetch new API code and retry.
-      return await this.activateDoor(doorNumber, direction, 0, false);
+      return await this.activateDoor(hubNumber, doorNumber, direction, 0, false);
     } else if (activateResponseObj.response.result !== 'OK') {
       throw new Error(`Failed to ${direction} garage door`);
     }

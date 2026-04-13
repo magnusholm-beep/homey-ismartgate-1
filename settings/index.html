@@ -6,6 +6,10 @@
       src="/homey.js"
       data-origin="settings"
   ></script>
+  <style>
+    fieldset { margin-bottom: 16px; }
+    legend { font-weight: bold; }
+  </style>
 </head>
 <body>
 <h1 data-i18n="settings.title">
@@ -16,6 +20,7 @@
 </p>
 
 <fieldset>
+  <legend>Hub 1</legend>
   <div class="field row">
     <label for="udi">UDI</label>
     <input id="udi" type="text" value="" />
@@ -30,6 +35,22 @@
   </div>
 </fieldset>
 
+<fieldset>
+  <legend>Hub 2 (optional)</legend>
+  <div class="field row">
+    <label for="udi2">UDI</label>
+    <input id="udi2" type="text" value="" />
+  </div>
+  <div class="field row">
+    <label for="username2">Username</label>
+    <input id="username2" type="text" value="" />
+  </div>
+  <div class="field row">
+    <label for="password2">Password</label>
+    <input id="password2" type="password" value="" />
+  </div>
+</fieldset>
+
 <button id="save" class="right">Save changes</button>
 <br>
 <p id="resultLabel"></p>
@@ -41,44 +62,57 @@
     let usernameElement = document.getElementById("username");
     let passwordElement = document.getElementById("password");
     let udiElement = document.getElementById("udi");
+    let username2Element = document.getElementById("username2");
+    let password2Element = document.getElementById("password2");
+    let udi2Element = document.getElementById("udi2");
     let saveElement = document.getElementById("save");
     let resultLabelElement = document.getElementById("resultLabel");
 
     Homey.get("username", function (err, username) {
       if (err) return Homey.alert(err);
-      usernameElement.value = username;
+      usernameElement.value = username || '';
     });
-
     Homey.get("password", function (err, password) {
       if (err) return Homey.alert(err);
-      passwordElement.value = password;
+      passwordElement.value = password || '';
     });
-
     Homey.get("udi", function (err, udi) {
       if (err) return Homey.alert(err);
-      udiElement.value = udi;
+      udiElement.value = udi || '';
+    });
+    Homey.get("username2", function (err, username2) {
+      if (err) return Homey.alert(err);
+      username2Element.value = username2 || '';
+    });
+    Homey.get("password2", function (err, password2) {
+      if (err) return Homey.alert(err);
+      password2Element.value = password2 || '';
+    });
+    Homey.get("udi2", function (err, udi2) {
+      if (err) return Homey.alert(err);
+      udi2Element.value = udi2 || '';
     });
 
     saveElement.addEventListener("click", function (e) {
       resultLabelElement.innerText = 'Settings have been saved!';
 
       Homey.set("username", usernameElement.value, function (err) {
-        if (err) {
-          resultLabelElement.innerText = '';
-          return Homey.alert(err);
-        }
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
       });
       Homey.set("password", passwordElement.value, function (err) {
-        if (err) {
-          resultLabelElement.innerText = '';
-          return Homey.alert(err);
-        }
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
       });
       Homey.set("udi", udiElement.value, function (err) {
-        if (err) {
-          resultLabelElement.innerText = '';
-          return Homey.alert(err);
-        }
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
+      });
+      Homey.set("username2", username2Element.value, function (err) {
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
+      });
+      Homey.set("password2", password2Element.value, function (err) {
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
+      });
+      Homey.set("udi2", udi2Element.value, function (err) {
+        if (err) { resultLabelElement.innerText = ''; return Homey.alert(err); }
       });
     });
   }

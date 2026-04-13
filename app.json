@@ -80,12 +80,22 @@
           "en": "The battery level is !{{less than|greater than or equal to}} a given percentage"
         },
         "titleFormatted": {
-          "en": "The battery level of the sensor for door [[doorNumber]] is !{{less than|greater than or equal to}} [[batteryLevel]] %"
+          "en": "The battery level of the sensor for door [[doorNumber]] on hub [[hubNumber]] is !{{less than|greater than or equal to}} [[batteryLevel]] %"
         },
         "hint": {
           "en": "This flow card requires an ismartgate sensor with battery (e.g. Wireless Tilt Sensor)."
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",
@@ -114,9 +124,19 @@
           "en": "Door is !{{open|closed}}"
         },
         "titleFormatted": {
-          "en": "Door [[doorNumber]] is !{{open|closed}}"
+          "en": "Door [[doorNumber]] on hub [[hubNumber]] is !{{open|closed}}"
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",
@@ -135,12 +155,22 @@
           "en": "The temperature is !{{less than|greater than or equal to}}"
         },
         "titleFormatted": {
-          "en": "The temperature of the sensor for door [[doorNumber]] is !{{less than|greater than or equal to}} [[temperature]] °C"
+          "en": "The temperature of the sensor for door [[doorNumber]] on hub [[hubNumber]] is !{{less than|greater than or equal to}} [[temperature]] °C"
         },
         "hint": {
           "en": "This flow card requires an ismartgate sensor with temperature support (e.g. Wireless Tilt Sensor)."
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",
@@ -171,9 +201,19 @@
           "en": "Close door"
         },
         "titleFormatted": {
-          "en": "Close door [[doorNumber]]"
+          "en": "Close door [[doorNumber]] on hub [[hubNumber]]"
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",
@@ -192,9 +232,19 @@
           "en": "Open door"
         },
         "titleFormatted": {
-          "en": "Open door [[doorNumber]]"
+          "en": "Open door [[doorNumber]] on hub [[hubNumber]]"
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",
@@ -213,12 +263,22 @@
           "en": "Toggle door state"
         },
         "titleFormatted": {
-          "en": "Toggle door [[doorNumber]] state"
+          "en": "Toggle door [[doorNumber]] state on hub [[hubNumber]]"
         },
         "hint": {
           "en": "If the door is open, close it. Or if the door is closed, open it."
         },
         "args": [
+          {
+            "type": "number",
+            "name": "hubNumber",
+            "placeholder": {
+              "en": "1 or 2"
+            },
+            "min": 1,
+            "max": 2,
+            "step": 1
+          },
           {
             "type": "number",
             "name": "doorNumber",

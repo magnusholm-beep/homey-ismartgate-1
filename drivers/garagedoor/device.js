@@ -6,8 +6,9 @@ class GarageDoorDevice extends Homey.Device {
   async onInit() {
     this.log('GarageDoorDevice initialized:', this.getName());
 
+    const hubNumber = this.getStoreValue('hubNumber') || 1;
     const doorNumber = this.getStoreValue('doorNumber');
-    this.log('Door number:', doorNumber);
+    this.log('Hub number:', hubNumber, 'Door number:', doorNumber);
 
     this.previousIsOpen = null;
 
@@ -42,16 +43,17 @@ class GarageDoorDevice extends Homey.Device {
   }
 
   async onCapabilityToggle(value) {
+    const hubNumber = this.getStoreValue('hubNumber') || 1;
     const doorNumber = this.getStoreValue('doorNumber');
     const app = this.homey.app;
 
     try {
       if (value) {
-        this.log('Opening door', doorNumber);
-        await app.activateDoor(doorNumber, 'open');
+        this.log('Opening door', doorNumber, 'on hub', hubNumber);
+        await app.activateDoor(hubNumber, doorNumber, 'open');
       } else {
-        this.log('Closing door', doorNumber);
-        await app.activateDoor(doorNumber, 'close');
+        this.log('Closing door', doorNumber, 'on hub', hubNumber);
+        await app.activateDoor(hubNumber, doorNumber, 'close');
       }
 
       this.homey.setTimeout(async () => {
@@ -67,11 +69,12 @@ class GarageDoorDevice extends Homey.Device {
   async pollDeviceStatus() {
     if (this.deleted) return;
 
+    const hubNumber = this.getStoreValue('hubNumber') || 1;
     const doorNumber = this.getStoreValue('doorNumber');
 
     try {
       const app = this.homey.app;
-      const infoResponse = await app.getInfo(1);
+      const infoResponse = await app.getInfo(hubNumber, 1);
 
       const door = infoResponse.response[`door${doorNumber}`];
 

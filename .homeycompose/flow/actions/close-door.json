@@ -3,9 +3,19 @@
     "en": "Close door"
   },
   "titleFormatted": {
-    "en": "Close door [[doorNumber]]"
+    "en": "Close door [[doorNumber]] on hub [[hubNumber]]"
   },
   "args": [
+    {
+      "type": "number",
+      "name": "hubNumber",
+      "placeholder": {
+        "en": "1 or 2"
+      },
+      "min": 1,
+      "max": 2,
+      "step": 1
+    },
     {
       "type": "number",
       "name": "doorNumber",
