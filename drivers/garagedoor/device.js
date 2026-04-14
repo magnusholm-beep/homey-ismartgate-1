@@ -31,7 +31,11 @@ class GarageDoorDevice extends Homey.Device {
     }
 
     this.pollInterval = this.homey.setInterval(async () => {
-      await this.pollDeviceStatus();
+      try {
+        await this.pollDeviceStatus();
+      } catch (err) {
+        this.error('Unhandled error in poll loop:', err.message);
+      }
     }, pollInterval * 1000);
   }
 
