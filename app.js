@@ -1,7 +1,6 @@
 'use strict';
 
 const Homey = require('homey');
-const uuid = require('uuid')
 const crypto = require('crypto');
 const fxparser = require("fast-xml-parser");
 const nodeFetch = require('node-fetch');
@@ -19,6 +18,7 @@ class ISmartGateApp extends Homey.App {
     toggleDoorState.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       await this.activateDoor(hubNumber, doorNumber, 'toggle');
     });
 
@@ -26,6 +26,7 @@ class ISmartGateApp extends Homey.App {
     openDoor.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       await this.activateDoor(hubNumber, doorNumber, 'open');
     });
 
@@ -33,6 +34,7 @@ class ISmartGateApp extends Homey.App {
     closeDoor.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       await this.activateDoor(hubNumber, doorNumber, 'close');
     });
 
@@ -40,6 +42,7 @@ class ISmartGateApp extends Homey.App {
     doorIsOpen.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isDoorOpen(infoResponseObj, doorNumber);
     });
@@ -48,6 +51,7 @@ class ISmartGateApp extends Homey.App {
     temperatureIsLessThan.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber, temperature} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isTemperatureLessThan(infoResponseObj, doorNumber, temperature);
     });
@@ -56,11 +60,21 @@ class ISmartGateApp extends Homey.App {
     batteryLevelIsLessThan.registerRunListener(async (args) => {
       const hubNumber = args.hubNumber || 1;
       const {doorNumber, batteryLevel} = args;
+      this.validateFlowArgs(hubNumber, doorNumber);
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isBatteryLevelLessThan(infoResponseObj, doorNumber, batteryLevel);
     });
 
     this.log('ismartgate app initialized');
+  }
+
+  validateFlowArgs(hubNumber, doorNumber) {
+    if (![1, 2].includes(Number(hubNumber))) {
+      throw new Error(`Invalid hub number: ${hubNumber}. Must be 1 or 2.`);
+    }
+    if (![1, 2, 3].includes(Number(doorNumber))) {
+      throw new Error(`Invalid door number: ${doorNumber}. Must be 1, 2, or 3.`);
+    }
   }
 
   getSettings(hubNumber = 1) {
@@ -169,20 +183,17 @@ class ISmartGateApp extends Homey.App {
 
     const apiCipherKey = `${sha1HexStr.slice(32, 36)}a${sha1HexStr.slice(7, 10)}!${sha1HexStr.slice(18, 21)}*#${sha1HexStr.slice(24, 26)}`
 
-    const buffer = Buffer.alloc(16);
-    uuid.v4({}, buffer);
-    let initVector = buffer.toString('hex');
+    // Generate a random 16-byte IV expressed as 16 hex chars (as expected by the API protocol)
+    const initVectorBytes = crypto.randomBytes(8).toString('hex');
 
-    const initVectorBytes = initVector.slice(0, aesBlockSize);
-
-    let encryptAES256CBC = ((val) => {
+    let encryptAES128CBC = ((val) => {
       let cipher = crypto.createCipheriv('aes-128-cbc', apiCipherKey, initVectorBytes);
       let encrypted = cipher.update(val, 'utf8', 'base64');
       encrypted += cipher.final('base64');
       return encrypted;
     });
 
-    const encryptedCommandStr = initVectorBytes + encryptAES256CBC(commandStr);
+    const encryptedCommandStr = initVectorBytes + encryptAES128CBC(commandStr);
 
     const t = (1 + 99999999 * (Math.random() | 0)).toString();
 
@@ -202,19 +213,20 @@ class ISmartGateApp extends Homey.App {
       return (decrypted + decipher.final('utf8'));
     }
 
-    return await nodeFetch(apiUrl)
-      .then((response) => {
-        return response.text()
-      }).then((text) => {
-        if (text.includes('Error: invalid login or password')) {
-          throw new Error('Invalid ismartgate username or password. Go to ismartgate settings and make sure your credentials are correct.')
-        } else {
-          const decryptedXml = decrypt(text);
-          return that.parseResponse(decryptedXml);
-        }
-      }).catch(function() {
-        throw new Error('Failed to reach your ismartgate device. The connection may be broken, or the UDI in the ismartgate settings page may be incorrect.')
-      });
+    let text;
+    try {
+      const response = await nodeFetch(apiUrl);
+      text = await response.text();
+    } catch (err) {
+      throw new Error('Failed to reach your ismartgate device. The connection may be broken, or the UDI in the ismartgate settings page may be incorrect.');
+    }
+
+    if (text.includes('Error: invalid login or password')) {
+      throw new Error('Invalid ismartgate username or password. Go to ismartgate settings and make sure your credentials are correct.');
+    }
+
+    const decryptedXml = decrypt(text);
+    return that.parseResponse(decryptedXml);
   }
 
   async activateDoor(hubNumber, doorNumber, direction, maxCacheAgeInSeconds = null, allowRetry = true) {
