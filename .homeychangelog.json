@@ -28,5 +28,8 @@
   },
   "1.5.1": {
     "en": "Fix auth errors being reported as generic network errors. Add validation for flow card hub and door number arguments. Improve polling loop stability."
+  },
+  "1.6.0": {
+    "en": "Flow action and condition cards now use a device picker instead of manual hub and door number inputs, making flows easier to set up."
   }
 }
