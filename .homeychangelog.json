@@ -40,5 +40,8 @@
   },
   "1.7.1": {
     "en": "Fix error when using the test connection button in settings."
+  },
+  "1.7.2": {
+    "en": "Fix test connection button not showing error messages correctly."
   }
 }

@@ -105,9 +105,10 @@
     function testConnection(hubNumber, resultElement) {
       resultElement.innerText = 'Testing...';
       resultElement.style.color = '';
-      Homey.api('GET', '/test-connection?hubNumber=' + hubNumber, function (err) {
-        if (err) {
-          resultElement.innerText = '✗ ' + err.message;
+      Homey.api('GET', '/test-connection?hubNumber=' + hubNumber, function (err, result) {
+        if (err || !result || !result.success) {
+          const message = (result && result.error) || (err && err.message) || 'Unknown error';
+          resultElement.innerText = '✗ ' + message;
           resultElement.style.color = 'red';
         } else {
           resultElement.innerText = '✓ Connection successful!';

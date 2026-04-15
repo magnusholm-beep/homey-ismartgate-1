@@ -85,8 +85,12 @@ class ISmartGateApp extends Homey.App {
 
   async getTestConnection({ query }) {
     const hubNumber = Number(query && query.hubNumber) || 1;
-    await this.getInfo(hubNumber, 0);
-    return {};
+    try {
+      await this.getInfo(hubNumber, 0);
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
   }
 
   isHubConfigured(hubNumber) {
