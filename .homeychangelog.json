@@ -43,5 +43,8 @@
   },
   "1.7.2": {
     "en": "Fix test connection button not showing error messages correctly."
+  },
+  "1.7.3": {
+    "en": "Fix test connection button crashing due to incorrect API call format."
   }
 }
