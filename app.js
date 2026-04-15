@@ -204,7 +204,6 @@ class ISmartGateApp extends Homey.App {
     };
     const apiUrl = `https://${udi}.isgaccess.com/api.php?` + new URLSearchParams(params);
 
-    const that = this;
     function decrypt(text) {
       let initialVector = text.slice(0, aesBlockSize);
       let encryptedBytes = text.slice(aesBlockSize);
@@ -215,18 +214,28 @@ class ISmartGateApp extends Homey.App {
 
     let text;
     try {
-      const response = await nodeFetch(apiUrl);
+      const response = await nodeFetch(apiUrl, { timeout: 30000 });
       text = await response.text();
     } catch (err) {
-      throw new Error('Failed to reach your ismartgate device. The connection may be broken, or the UDI in the ismartgate settings page may be incorrect.');
+      throw new Error(`Failed to reach your ismartgate device: ${err.message}. The connection may be broken, or the UDI in the ismartgate settings page may be incorrect.`);
     }
 
     if (text.includes('Error: invalid login or password')) {
       throw new Error('Invalid ismartgate username or password. Go to ismartgate settings and make sure your credentials are correct.');
     }
 
-    const decryptedXml = decrypt(text);
-    return that.parseResponse(decryptedXml);
+    let decryptedXml;
+    try {
+      decryptedXml = decrypt(text);
+    } catch (err) {
+      throw new Error(`Failed to decrypt the response from your ismartgate device: ${err.message}. The device firmware or encryption protocol may have changed.`);
+    }
+
+    try {
+      return this.parseResponse(decryptedXml);
+    } catch (err) {
+      throw new Error(`Failed to parse the response from your ismartgate device: ${err.message}.`);
+    }
   }
 
   async activateDoor(hubNumber, doorNumber, direction, maxCacheAgeInSeconds = null, allowRetry = true) {
