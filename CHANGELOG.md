@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.6] - 2026-04-15
+
+### Added
+- Norwegian (`no`) locale file for the settings UI (`locales/no.json`)
+
+### Fixed
+- Settings page now validates that Hub 1 fields (UDI, username, password) are filled before saving
+- Settings page validates that Hub 2 fields are either all filled or all empty
+- "Settings have been saved!" message now only appears after all `Homey.set()` calls succeed (race condition fixed)
+- Save button is disabled during save to prevent double-submits
+- Remove unused `uuid` dependency from `package.json`
+
 ## [1.7.5] - 2026-04-15
 
 ### Fixed

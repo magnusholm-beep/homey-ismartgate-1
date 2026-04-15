@@ -1,0 +1,22 @@
+{
+  "settings": {
+    "title": "Innstillinger",
+    "subtitle": "Logg inn for å koble til ismartgate-enheten din. Merk at ekstern tilgang må være aktivert for at dette skal fungere."
+  },
+  "drivers": {
+    "garagedoor": {
+      "name": "Garasjeport",
+      "pair": {
+        "list_devices": {
+          "title": "Velg porter",
+          "subtitle": "Velg garasjeportene du vil legge til"
+        }
+      },
+      "settings": {
+        "poll_interval": {
+          "title": "Avspørringsintervall"
+        }
+      }
+    }
+  }
+}
