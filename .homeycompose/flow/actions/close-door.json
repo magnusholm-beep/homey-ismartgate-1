@@ -1,6 +1,7 @@
 {
   "title": {
-    "en": "Close door"
+    "en": "Close door",
+    "no": "Lukk port"
   },
   "args": [
     {

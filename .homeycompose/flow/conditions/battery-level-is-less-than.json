@@ -1,12 +1,15 @@
 {
   "title": {
-    "en": "The battery level is !{{less than|greater than or equal to}} a given percentage"
+    "en": "The battery level is !{{less than|greater than or equal to}} a given percentage",
+    "no": "Batterinivået er !{{lavere enn|høyere enn eller lik}} en gitt prosentandel"
   },
   "titleFormatted": {
-    "en": "The battery level is !{{less than|greater than or equal to}} [[batteryLevel]] %"
+    "en": "The battery level is !{{less than|greater than or equal to}} [[batteryLevel]] %",
+    "no": "Batterinivået er !{{lavere enn|høyere enn eller lik}} [[batteryLevel]] %"
   },
   "hint": {
-    "en": "This flow card requires an ismartgate sensor with battery (e.g. Wireless Tilt Sensor)."
+    "en": "This flow card requires an ismartgate sensor with battery (e.g. Wireless Tilt Sensor).",
+    "no": "Dette flowkortet krever en ismartgate-sensor med batteri (f.eks. Wireless Tilt Sensor)."
   },
   "args": [
     {

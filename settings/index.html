@@ -9,6 +9,7 @@
   <style>
     fieldset { margin-bottom: 16px; }
     legend { font-weight: bold; }
+    .test-result { margin-top: 8px; font-size: 0.9em; }
   </style>
 </head>
 <body>
@@ -33,6 +34,8 @@
     <label for="password">Password</label>
     <input id="password" type="password" value="" />
   </div>
+  <button id="test1">Test connection</button>
+  <p id="testResult1" class="test-result"></p>
 </fieldset>
 
 <fieldset>
@@ -49,6 +52,8 @@
     <label for="password2">Password</label>
     <input id="password2" type="password" value="" />
   </div>
+  <button id="test2">Test connection</button>
+  <p id="testResult2" class="test-result"></p>
 </fieldset>
 
 <button id="save" class="right">Save changes</button>
@@ -67,6 +72,10 @@
     let udi2Element = document.getElementById("udi2");
     let saveElement = document.getElementById("save");
     let resultLabelElement = document.getElementById("resultLabel");
+    let test1Element = document.getElementById("test1");
+    let test2Element = document.getElementById("test2");
+    let testResult1Element = document.getElementById("testResult1");
+    let testResult2Element = document.getElementById("testResult2");
 
     Homey.get("username", function (err, username) {
       if (err) return Homey.alert(err);
@@ -91,6 +100,28 @@
     Homey.get("udi2", function (err, udi2) {
       if (err) return Homey.alert(err);
       udi2Element.value = udi2 || '';
+    });
+
+    function testConnection(hubNumber, resultElement) {
+      resultElement.innerText = 'Testing...';
+      resultElement.style.color = '';
+      Homey.api('GET', '/test-connection?hubNumber=' + hubNumber, null, function (err) {
+        if (err) {
+          resultElement.innerText = '✗ ' + err.message;
+          resultElement.style.color = 'red';
+        } else {
+          resultElement.innerText = '✓ Connection successful!';
+          resultElement.style.color = 'green';
+        }
+      });
+    }
+
+    test1Element.addEventListener("click", function () {
+      testConnection(1, testResult1Element);
+    });
+
+    test2Element.addEventListener("click", function () {
+      testConnection(2, testResult2Element);
     });
 
     saveElement.addEventListener("click", function (e) {

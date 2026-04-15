@@ -1,9 +1,11 @@
 {
   "title": {
-    "en": "Toggle door state"
+    "en": "Toggle door state",
+    "no": "Veksle portstatus"
   },
   "hint": {
-    "en": "If the door is open, close it. Or if the door is closed, open it."
+    "en": "If the door is open, close it. Or if the door is closed, open it.",
+    "no": "Hvis porten er åpen, lukkes den. Hvis porten er lukket, åpnes den."
   },
   "args": [
     {

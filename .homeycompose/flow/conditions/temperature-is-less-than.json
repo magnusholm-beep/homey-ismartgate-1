@@ -1,12 +1,15 @@
 {
   "title": {
-    "en": "The temperature is !{{less than|greater than or equal to}}"
+    "en": "The temperature is !{{less than|greater than or equal to}}",
+    "no": "Temperaturen er !{{lavere enn|høyere enn eller lik}}"
   },
   "titleFormatted": {
-    "en": "The temperature is !{{less than|greater than or equal to}} [[temperature]] °C"
+    "en": "The temperature is !{{less than|greater than or equal to}} [[temperature]] °C",
+    "no": "Temperaturen er !{{lavere enn|høyere enn eller lik}} [[temperature]] °C"
   },
   "hint": {
-    "en": "This flow card requires an ismartgate sensor with temperature support (e.g. Wireless Tilt Sensor)."
+    "en": "This flow card requires an ismartgate sensor with temperature support (e.g. Wireless Tilt Sensor).",
+    "no": "Dette flowkortet krever en ismartgate-sensor med temperaturfunksjon (f.eks. Wireless Tilt Sensor)."
   },
   "args": [
     {

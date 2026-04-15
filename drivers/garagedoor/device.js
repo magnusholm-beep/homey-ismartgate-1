@@ -66,6 +66,8 @@ class GarageDoorDevice extends Homey.Device {
 
     } catch (error) {
       this.error('Failed to control door:', error.message);
+      // Poll immediately to restore the correct capability state in the UI
+      await this.pollDeviceStatus().catch(() => {});
       throw new Error(error.message);
     }
   }
