@@ -3,7 +3,7 @@
     "en": "The temperature is !{{less than|greater than or equal to}}"
   },
   "titleFormatted": {
-    "en": "The temperature of [[device]] is !{{less than|greater than or equal to}} [[temperature]] °C"
+    "en": "The temperature is !{{less than|greater than or equal to}} [[temperature]] °C"
   },
   "hint": {
     "en": "This flow card requires an ismartgate sensor with temperature support (e.g. Wireless Tilt Sensor)."

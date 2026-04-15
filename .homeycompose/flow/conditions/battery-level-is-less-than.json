@@ -3,7 +3,7 @@
     "en": "The battery level is !{{less than|greater than or equal to}} a given percentage"
   },
   "titleFormatted": {
-    "en": "The battery level of [[device]] is !{{less than|greater than or equal to}} [[batteryLevel]] %"
+    "en": "The battery level is !{{less than|greater than or equal to}} [[batteryLevel]] %"
   },
   "hint": {
     "en": "This flow card requires an ismartgate sensor with battery (e.g. Wireless Tilt Sensor)."

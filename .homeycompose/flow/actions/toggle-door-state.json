@@ -2,9 +2,6 @@
   "title": {
     "en": "Toggle door state"
   },
-  "titleFormatted": {
-    "en": "Toggle [[device]] state"
-  },
   "hint": {
     "en": "If the door is open, close it. Or if the door is closed, open it."
   },

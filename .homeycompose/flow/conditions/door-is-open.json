@@ -1,9 +1,6 @@
 {
   "title": {
-    "en": "[[device]] is !{{open|closed}}"
-  },
-  "titleFormatted": {
-    "en": "[[device]] is !{{open|closed}}"
+    "en": "Door is !{{open|closed}}"
   },
   "args": [
     {

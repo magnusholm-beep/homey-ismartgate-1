@@ -2,9 +2,6 @@
   "title": {
     "en": "Open door"
   },
-  "titleFormatted": {
-    "en": "Open [[device]]"
-  },
   "args": [
     {
       "type": "device",

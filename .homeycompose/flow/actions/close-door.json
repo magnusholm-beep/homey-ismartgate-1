@@ -2,9 +2,6 @@
   "title": {
     "en": "Close door"
   },
-  "titleFormatted": {
-    "en": "Close [[device]]"
-  },
   "args": [
     {
       "type": "device",
