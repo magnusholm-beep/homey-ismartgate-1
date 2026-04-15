@@ -9,72 +9,59 @@ const nodeFetch = require('node-fetch');
 class ISmartGateApp extends Homey.App {
   async onInit() {
     this.cachedInfoResponse = {
-      1: { obj: null, time: null },
-      2: { obj: null, time: null },
+      1: { obj: null, time: null, pending: null },
+      2: { obj: null, time: null, pending: null },
     };
 
     // Register flow cards
     const toggleDoorState = this.homey.flow.getActionCard('toggle-door-state');
     toggleDoorState.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
       await this.activateDoor(hubNumber, doorNumber, 'toggle');
     });
 
     const openDoor = this.homey.flow.getActionCard('open-door');
     openDoor.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
       await this.activateDoor(hubNumber, doorNumber, 'open');
     });
 
     const closeDoor = this.homey.flow.getActionCard('close-door');
     closeDoor.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
       await this.activateDoor(hubNumber, doorNumber, 'close');
     });
 
     const doorIsOpen = this.homey.flow.getConditionCard('door-is-open');
     doorIsOpen.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isDoorOpen(infoResponseObj, doorNumber);
     });
 
     const temperatureIsLessThan = this.homey.flow.getConditionCard('temperature-is-less-than');
     temperatureIsLessThan.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber, temperature} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
+      const {temperature} = args;
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isTemperatureLessThan(infoResponseObj, doorNumber, temperature);
     });
 
     const batteryLevelIsLessThan = this.homey.flow.getConditionCard('battery-level-is-less-than');
     batteryLevelIsLessThan.registerRunListener(async (args) => {
-      const hubNumber = args.hubNumber || 1;
-      const {doorNumber, batteryLevel} = args;
-      this.validateFlowArgs(hubNumber, doorNumber);
+      const hubNumber = args.device.getStoreValue('hubNumber') || 1;
+      const doorNumber = args.device.getStoreValue('doorNumber');
+      const {batteryLevel} = args;
       let infoResponseObj = await this.getInfo(hubNumber, 1);
       return this.isBatteryLevelLessThan(infoResponseObj, doorNumber, batteryLevel);
     });
 
     this.log('ismartgate app initialized');
-  }
-
-  validateFlowArgs(hubNumber, doorNumber) {
-    if (![1, 2].includes(Number(hubNumber))) {
-      throw new Error(`Invalid hub number: ${hubNumber}. Must be 1 or 2.`);
-    }
-    if (![1, 2, 3].includes(Number(doorNumber))) {
-      throw new Error(`Invalid door number: ${doorNumber}. Must be 1, 2, or 3.`);
-    }
   }
 
   getSettings(hubNumber = 1) {
@@ -110,11 +97,24 @@ class ISmartGateApp extends Homey.App {
     if (cacheAgeInSeconds < maxCacheAgeInSeconds) {
       return cache.obj;
     }
+    // If a request is already in flight, return the same promise to avoid duplicate API calls
+    if (cache.pending !== null) {
+      return cache.pending;
+    }
     const { username, password } = this.getSettings(hubNumber);
     const infoCommandStr = `["${username}", "${password}", "info", "", ""]`;
-    cache.obj = await this.executeRequest(infoCommandStr, hubNumber);
-    cache.time = new Date();
-    return cache.obj;
+    cache.pending = this.executeRequest(infoCommandStr, hubNumber)
+      .then((result) => {
+        cache.obj = result;
+        cache.time = new Date();
+        cache.pending = null;
+        return result;
+      })
+      .catch((err) => {
+        cache.pending = null;
+        throw err;
+      });
+    return cache.pending;
   }
 
   parseResponse(xmlStr) {
