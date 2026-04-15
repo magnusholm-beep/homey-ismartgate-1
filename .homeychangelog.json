@@ -46,5 +46,8 @@
   },
   "1.7.3": {
     "en": "Fix test connection button crashing due to incorrect API call format."
+  },
+  "1.7.4": {
+    "en": "Fix test connection button by moving the API handler to a dedicated api.js file as required by Homey SDK v3."
   }
 }

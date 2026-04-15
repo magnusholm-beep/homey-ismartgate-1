@@ -105,7 +105,7 @@
     function testConnection(hubNumber, resultElement) {
       resultElement.innerText = 'Testing...';
       resultElement.style.color = '';
-      Homey.api('GET', '/test-connection', { hubNumber: hubNumber }, function (err, result) {
+      Homey.api('POST', '/test-connection', { hubNumber: hubNumber }, function (err, result) {
         if (err || !result || !result.success) {
           const message = (result && result.error) || (err && err.message) || 'Unknown error';
           resultElement.innerText = '✗ ' + message;
