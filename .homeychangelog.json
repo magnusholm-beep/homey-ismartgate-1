@@ -37,5 +37,8 @@
   },
   "1.7.0": {
     "en": "Add Norwegian translations for flow cards. Fix door toggle reverting to wrong state on failure. Add test connection button in settings."
+  },
+  "1.7.1": {
+    "en": "Fix error when using the test connection button in settings."
   }
 }
