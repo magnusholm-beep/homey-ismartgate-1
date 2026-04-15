@@ -105,7 +105,7 @@
     function testConnection(hubNumber, resultElement) {
       resultElement.innerText = 'Testing...';
       resultElement.style.color = '';
-      Homey.api('GET', '/test-connection?hubNumber=' + hubNumber, null, function (err) {
+      Homey.api('GET', '/test-connection?hubNumber=' + hubNumber, function (err) {
         if (err) {
           resultElement.innerText = '✗ ' + err.message;
           resultElement.style.color = 'red';

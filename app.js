@@ -83,6 +83,12 @@ class ISmartGateApp extends Homey.App {
     return { udi, username, password };
   }
 
+  async getTestConnection({ query }) {
+    const hubNumber = Number(query && query.hubNumber) || 1;
+    await this.getInfo(hubNumber, 0);
+    return {};
+  }
+
   isHubConfigured(hubNumber) {
     const suffix = hubNumber === 2 ? '2' : '';
     return !!this.homey.settings.get(`udi${suffix}`);
