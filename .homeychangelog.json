@@ -31,5 +31,8 @@
   },
   "1.6.0": {
     "en": "Flow action and condition cards now use a device picker instead of manual hub and door number inputs, making flows easier to set up."
+  },
+  "1.6.1": {
+    "en": "Fix app installation error caused by invalid placeholders in flow card titles."
   }
 }
